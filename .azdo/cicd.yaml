@@ -2,7 +2,7 @@ trigger:
 - main
 
 variables:
-  # Azure SQL Database details
+  azureSubscription: ''
   sqlServerName: 'tcp:hhsqlserverdemos.database.windows.net,1433'
   sqlDatabaseName: 'hh_demo_agents_tasks'
   sqlAdminUsername: 'huntley'
