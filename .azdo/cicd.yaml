@@ -3,9 +3,9 @@ trigger:
 
 variables:
   # Azure SQL Database details
-  sqlServerName: ''
-  sqlDatabaseName: ''
-  sqlAdminUsername: ''
+  sqlServerName: 'tcp:hhsqlserverdemos.database.windows.net,1433'
+  sqlDatabaseName: 'hh_demo_agents_tasks'
+  sqlAdminUsername: 'huntley'
 
 stages:
 - stage: Build
