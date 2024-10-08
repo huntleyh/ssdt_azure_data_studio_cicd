@@ -1,0 +1,49 @@
+trigger:
+- main
+
+variables:
+  # Azure SQL Database details
+  sqlServerName: ''
+  sqlDatabaseName: ''
+  sqlAdminUsername: ''
+
+stages:
+- stage: Build
+  jobs:
+  - job: Build
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+    - task: UseDotNet@2
+      inputs:
+        packageType: 'sdk'
+        version: '5.x'
+        installationPath: $(Agent.ToolsDirectory)/dotnet
+
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'restore'
+        projects: '**/*.csproj'
+
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'build'
+        projects: '**/*.csproj'
+        arguments: '--configuration Release'
+
+- stage: Deploy
+  jobs:
+  - job: Deploy
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+    - task: SqlAzureDacpacDeployment@1
+      inputs:
+        azureSubscription: '$(azureSubscription)'
+        ServerName: '$(sqlServerName)'
+        DatabaseName: '$(sqlDatabaseName)'
+        SqlUsername: '$(sqlAdminUsername)'
+        SqlPassword: '$(sqlAdminPassword)'
+        DacpacFile: '$(Pipeline.Workspace)/_your_project_name/your_project_name/bin/Release/your_project_name.dacpac'
+        DeployType: 'DacpacTask'
+        AdditionalArguments: '/p:BlockOnPossibleDataLoss=false'
